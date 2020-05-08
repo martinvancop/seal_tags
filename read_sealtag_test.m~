@@ -18,8 +18,8 @@ clear all, close all
 user   = 'Martin' % 'Martin' or 'Bastien'
 i_read = 1      % 1 to read data (takes time!), 0 if not
 i_save = 1      % 1 to save data into outfile
-i_load = 1      % 0 to load data from outfile (to test the file)
-i_plot = 1      % 0 to make a quick test plot
+i_load = 0      % 0 to load data from outfile (to test the file)
+i_plot = 0      % 0 to make a quick test plot
 
 outfile = 'test.mat'
 
@@ -181,38 +181,35 @@ end
 % Save into a .mat file
 %------------------------
 
-if ( i_save == 1 );
-    
-    save( [outdir, outfile], 'Ns', 'station', 'cruise_name', 'datestr', 'lat', 'lon', 'platform', 'cl', 'hs', 'Ichla', ...
-        'Nr', 'Date', 'Depth', 'Temp', 'LL1', 'LL2' );
-    
+if ( i_save = 1 )
+    save( [outdir, outfile] )
 end
 
 %------------------------
-% Load .mat file
+% Load data from .matfile
 %------------------------
 
-if ( i_load == 1 );
-    
-    test = load( [outdir, outfile] );
-    
+if ( i_load = 1 )
+    test = load( [outdir, outfile] )
 end
+
 
 %-----------
 % Test plot
 %-----------
+%   
 
 if ( i_plot == 1 ) 
     
-    figure; hold on;
+    figure; hold on
     zaddr = find(~isnan(LL1) & LL1 ~= 0 & ~isnan(LL2) & LL2 ~= 0 );
 
-    subplot(2,2,1), plot(Depth(zaddr)), ylabel('Depth');
+    subplot(2,2,1), plot(Depth(zaddr)), ylabel('Depth')
 
-    subplot(2,2,2), hold on; 
+    subplot(2,2,2), hold on, 
     plot(LL1(zaddr)), plot(LL2), ylabel('LL1,LL2')
 
-    subplot(2,2,3), hold on;
+    subplot(2,2,3), hold on, 
     plot(Temp(zaddr)), ylabel('temperature')
     
 end

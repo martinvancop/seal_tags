@@ -1,0 +1,30 @@
+% === Seal Tag work: todolist ===
+%
+% 1) data preparation
+% - encode all metadata (Bastien)
+% - add Spitzbergen data & Metadata (Martin)
+% - execute all scripts (Bastien)
+
+% 2) control plots
+% - map stations (Bastien)
+% - plot -Depth vs LL1 & LL2 at ROV, LARM and ICE-T sites (Bastien)
+% - plot histograms: depth, temperature, LL1, LL2 where values are meaningful using zaddr (Bastien)
+% - plot LL1 vs LL2 (Bastien)
+% - plot -Depth vs Temp (understand the two modes) (Bastien)
+% - plot -Depth vs LL1 & understand (Bastien)
+% - plot -Depth vs LL2 & understand (Bastien)
+
+% 3) inter-calibration
+% - convert LL1 and LL2 into physical quantities (IRR1, IRR2) (Martin & Bastien)
+
+% - Retrieve IRR1 & IRR2 from spectrometers (LARM sites, ROV sites, ICET sites, Martin & Bastien)
+% - compare IRR1 & IRR2 from tag / spectrometer (Martin & Bastien)
+
+% - Retrieve NDI from spectrometers and tag
+% - Compare NDIs from tag / spectrometer
+
+% 4) analysis
+% - 
+% - extract ice concentration from satellite data at all sites (Martin)
+% - extract ERA-interim solar radiation (Martin)
+% - understand signals

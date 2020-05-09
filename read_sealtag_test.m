@@ -7,17 +7,11 @@ clear all, close all
 % start: Martin Vancoppenolle, May 2019
 %
 %---------------------------------------------------------------------------
-% todolist
-%
-% - encode all metadata (Bastien)
-% - convert LL1 and LL2 into more meaningful things (Martin)
-%
-%---------------------------------------------------------------------------
 
 % main script parameters
 user   = 'Martin' % 'Martin' or 'Bastien'
-i_read = 1      % 1 to read data (takes time!), 0 if not
-i_save = 1      % 1 to save data into outfile
+i_read = 0      % 1 to read data (takes time!), 0 if not
+i_save = 0      % 1 to save data into outfile
 i_load = 1      % 0 to load data from outfile (to test the file)
 i_plot = 1      % 0 to make a quick test plot
 
@@ -28,7 +22,7 @@ outfile = 'test.mat'
 %-----------------
 
 if ( strcmp(user,'Martin') == 1 )
-   indir  = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/CSV/';
+   indir  = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/SAV_CSV/';
    outdir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/'
 end
 
@@ -203,6 +197,13 @@ end
 %-----------
 
 if ( i_plot == 1 ) 
+    
+    if ( ( i_save == 0 ) & ( i_load == 1 ) )
+        LL1 = test.LL1;
+        LL2 = test.LL2;
+        Depth = test.Depth;
+        Temp  = test.Temp;
+    end
     
     figure; hold on;
     zaddr = find(~isnan(LL1) & LL1 ~= 0 & ~isnan(LL2) & LL2 ~= 0 );

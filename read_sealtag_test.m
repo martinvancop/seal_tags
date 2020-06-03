@@ -546,7 +546,7 @@ if ( i_plot == 1 )
     histogram(Temp(zaddr)), ylabel('LL2')
     
     figure; hold on %--- time series
-    i_sta = 2; % retained station for ze plot
+    i_sta = 1; % retained station for ze plot
 
     subplot(3,1,1); hold on; box on;
     plot( Date(i_sta,1:Nr(i_sta)), Depth(i_sta,1:Nr(i_sta)), 'k.' ); datetick; title(station_name(i_sta), 'Interpreter', 'none')

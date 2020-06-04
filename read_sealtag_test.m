@@ -10,19 +10,19 @@ clear all, close all
 
 % main script parameters
 user   = 'Martin' % 'Martin' or 'Bastien'
-i_read = 0      % 1 to read data (takes time!), 0 if not
-i_save = 0      % 1 to save data into outfile
-i_load = 1      % 0 to load data from outfile (to test the file)
+i_read = 1     % 1 to read data (takes time!), 0 if not
+i_save = 1     % 1 to save data into outfile
+i_load = 0      % 0 to load data from outfile (to test the file)
 i_plot = 1      % 0 to make a quick test plot
 
-outfile = 'test.mat'
+outfile = 'tag_data.mat'
 
 %-----------------
 % Set directories
 %-----------------
 
 if ( strcmp(user,'Martin') == 1 )
-   indir  = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/SAV_CSV/';
+   indir  = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/CORRECTED_DATA/';
    outdir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/'
 end
 
@@ -43,9 +43,9 @@ Ns = size(Filename,2) - 1;
 % Encode metadata
 %-----------------
 
-%                     %----------
-%                     % 'IceSt1'  (pas de donn√©es tag pour cette station)
-%                     %----------
+%----------
+% 'IceSt1'  (pas de donn√©es tag pour cette station)
+%----------
 % station = 'IceSt1'; zfile_station = string([ '17A0530_' station '.csv' ]);
 % zaddr   = find( strcmp(string(Filename),zfile_station ) == 1)
 % 
@@ -61,9 +61,9 @@ Ns = size(Filename,2) - 1;
 
 
 %--------------
-% 'IceSt2_ROV3' (ce fichier contient les donnÈes du tag pour les stations Ice 2 et ROV 3)
+% 'IceSt2' (ce fichier contient les donnÈes du tag pour les stations Ice 2)
 %--------------
-station = 'IceSt2_ROV3'; zfile_station = string([ '17A0530_' station '.csv' ])
+station = 'IceSt2'; zfile_station = string([ '17A0530_' station '.csv' ])
 zaddr   = find( strcmp(string(Filename),zfile_station ) == 1); station_name(zaddr) = string(station);
 
 % add metadata
@@ -89,7 +89,6 @@ cruise_name(zaddr)  = "PS117" ; % "PSS117" or "OPTI2018" or ...
 datestr(zaddr)      = 20190111 ; % YYYYMMDD
 lat(zaddr)          = -70.33583 ; lon(zaddr) = -8.935278 % latitude & longitude
 platform(zaddr)     = "LARM"  ; % "LARM" or "ROV" or "ICET" depending on which platform the tag was deployed
-
 
 cl(zaddr)           = 1.67   % core length mean over 2 sites
 hs(zaddr)           = 0.0378 % snow depth mean over 2 sites
@@ -219,26 +218,26 @@ hs(zaddr)           = nan;  % snow depth (m)
 Ichla(zaddr)        = nan;  % integrated chlorophyll (to be computed)
 
 
-%                     %----------
-%                     % 'ROV 3'
-%                     %----------
-% station = 'ROV3'; zfile_station = string([ '17A0530_' station '.csv' ]);
-% zaddr   = find( strcmp(string(Filename),zfile_station ) == 1)
-% 
-% % add metadata
-% cruise_name(zaddr)  = "PS117" ; % "PSS117" or "OPTI2018" or ...
-% datestr(zaddr)      = 20190110 ; % YYYYMMDD
-% lat(zaddr)          = -70.2991597 ; lon(zaddr) = -10.0443703 % latitude & longitude
-% platform(zaddr)     = "ROV"  ; % "LARM" or "ROV" or "ICET" depending on which platform the tag was deployed
-% 
-% cl(zaddr)           = nan;  % core length (m)
-% hs(zaddr)           = nan;  % snow depth (m)
-% Ichla(zaddr)        = nan;  % integrated chlorophyll (to be computed)
+%----------
+% 'ROV 3'
+%----------
+station = 'ROV3'; zfile_station = string([ '17A0530_' station '.csv' ]);
+zaddr   = find( strcmp(string(Filename),zfile_station ) == 1); station_name(zaddr) = string(station);
+
+% add metadata
+cruise_name(zaddr)  = "PS117" ; % "PSS117" or "OPTI2018" or ...
+datestr(zaddr)      = 20190110 ; % YYYYMMDD
+lat(zaddr)          = -70.2991597 ; lon(zaddr) = -10.0443703 % latitude & longitude
+platform(zaddr)     = "ROV"  ; % "LARM" or "ROV" or "ICET" depending on which platform the tag was deployed
+
+cl(zaddr)           = nan;  % core length (m)
+hs(zaddr)           = nan;  % snow depth (m)
+Ichla(zaddr)        = nan;  % integrated chlorophyll (to be computed)
 
 
-                    %----------
-                    % 'ROV 4'   (pas de donn√©es tag pour la station ROV 4)
-                    %----------
+%----------
+% 'ROV 4'   (pas de donn√©es tag pour la station ROV 4)
+%----------
 % station = 'ROV4'; zfile_station = string([ '17A0530_' station '.csv' ]);
 % zaddr   = find( strcmp(string(Filename),zfile_station ) == 1)
 % 
@@ -466,7 +465,8 @@ if ( i_read == 1 );
 
         % Assing variables to exported arrays
         Nr(i,1)            = size(zDate,1);
-        Date(i,1:Nr(i,1))  = zDate;
+        DateNum(i,1:Nr(i,1))  = zDate - 1.; % there is an 1 day lag for tag dates
+        DateTime(i,1:Nr(i,1)) = datetime( DateNum(i,1:Nr(i,1)), 'ConvertFrom', 'datenum' );
         Depth(i,1:Nr(i,1)) = zDepth;
         Temp(i,1:Nr(i,1))  = zT;
         LL1(i,1:Nr(i,1))   = zLL1;
@@ -487,7 +487,7 @@ end
 if ( i_save == 1 );
     
     save( [outdir, outfile], 'Ns', 'cruise_name', 'station_name', 'datestr', 'lat', 'lon', 'platform', 'cl', 'hs', 'Ichla', ...
-        'Nr', 'Date', 'Depth', 'Temp', 'LL1', 'LL2' );
+        'Nr', 'DateNum', 'DateTime', 'Depth', 'Temp', 'LL1', 'LL2' );
     
 end
 
@@ -549,16 +549,17 @@ if ( i_plot == 1 )
     i_sta = 1; % retained station for ze plot
 
     subplot(3,1,1); hold on; box on;
-    plot( Date(i_sta,1:Nr(i_sta)), Depth(i_sta,1:Nr(i_sta)), 'k.' ); datetick; title(station_name(i_sta), 'Interpreter', 'none')
-    ylabel("Depth (m)")
+    plot( Date(i_sta,1:Nr(i_sta)), -Depth(i_sta,1:Nr(i_sta)), 'k.' ); datetick('x','dd/mm HH:MM'); 
+    title(station_name(i_sta), 'Interpreter', 'none')
+    ylabel("Depth (m)");
     
     subplot(3,1,2); hold on; box on;
-    plot( Date(i_sta,1:Nr(i_sta)), Temp(i_sta,1:Nr(i_sta)), 'k.' ); datetick; 
+    plot( Date(i_sta,1:Nr(i_sta)), Temp(i_sta,1:Nr(i_sta)), 'k.' ); datetick('x','dd/mm HH:MM'); 
     ylabel("Temperature (∞C)")
     
     subplot(3,1,3); hold on; box on;
-    plot( Date(i_sta,1:Nr(i_sta)), LL1(i_sta,1:Nr(i_sta)), 'g.' ); datetick; 
-    plot( Date(i_sta,1:Nr(i_sta)), LL2(i_sta,1:Nr(i_sta)), 'b.' ); datetick; 
+    plot( Date(i_sta,1:Nr(i_sta)), LL1(i_sta,1:Nr(i_sta)), 'g.' ); datetick('x','dd/mm HH:MM'); 
+    plot( Date(i_sta,1:Nr(i_sta)), LL2(i_sta,1:Nr(i_sta)), 'b.' ); datetick('x','dd/mm HH:MM'); 
     ylabel("LL1,LL2")
     
     figure; hold on %--- profiles
@@ -571,6 +572,6 @@ if ( i_plot == 1 )
     xlabel("LL1,LL2"); ylabel("Depth (m)")
     
     figure; hold on %--- number of records per file
-    plot(Date(:,1),Nr,'ksq', 'MarkerFaceColor', 'blue'); ylabel('Number of records per file'); datetick
+    plot(Date(:,1),Nr,'ksq', 'MarkerFaceColor', 'blue'); ylabel('Number of records per file'); datetick  
     
 end

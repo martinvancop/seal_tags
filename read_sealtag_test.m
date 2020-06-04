@@ -10,9 +10,9 @@ clear all, close all
 
 % main script parameters
 user   = 'Martin' % 'Martin' or 'Bastien'
-i_read = 1     % 1 to read data (takes time!), 0 if not
-i_save = 1     % 1 to save data into outfile
-i_load = 0      % 0 to load data from outfile (to test the file)
+i_read = 0     % 1 to read data (takes time!), 0 if not
+i_save = 0     % 1 to save data into outfile
+i_load = 1      % 0 to load data from outfile (to test the file)
 i_plot = 1      % 0 to make a quick test plot
 
 outfile = 'tag_data.mat'
@@ -512,7 +512,7 @@ if ( i_plot == 1 )
         LL2          = test.LL2;
         Depth        = test.Depth;
         Temp         = test.Temp;
-        Date         = test.Date;
+        DateNum      = test.DateNum;
         Nr           = test.Nr;
         station_name = test.station_name
     end
@@ -530,7 +530,7 @@ if ( i_plot == 1 )
     plot(Temp(zaddr)), ylabel('temperature')
     
     subplot(2,2,4), hold on;
-    plot(Date(zaddr),Depth(zaddr), 'k.'), datetick
+    plot(DateNum(zaddr),Depth(zaddr), 'k.'), datetick
     
     figure; hold on %--- histograms
     subplot(2,2,1); hold on; box on;
@@ -549,17 +549,17 @@ if ( i_plot == 1 )
     i_sta = 1; % retained station for ze plot
 
     subplot(3,1,1); hold on; box on;
-    plot( Date(i_sta,1:Nr(i_sta)), -Depth(i_sta,1:Nr(i_sta)), 'k.' ); datetick('x','dd/mm HH:MM'); 
+    plot( DateNum(i_sta,1:Nr(i_sta)), -Depth(i_sta,1:Nr(i_sta)), 'k.' ); datetick('x','dd/mm HH:MM'); 
     title(station_name(i_sta), 'Interpreter', 'none')
     ylabel("Depth (m)");
     
     subplot(3,1,2); hold on; box on;
-    plot( Date(i_sta,1:Nr(i_sta)), Temp(i_sta,1:Nr(i_sta)), 'k.' ); datetick('x','dd/mm HH:MM'); 
+    plot( DateNum(i_sta,1:Nr(i_sta)), Temp(i_sta,1:Nr(i_sta)), 'k.' ); datetick('x','dd/mm HH:MM'); 
     ylabel("Temperature (°C)")
     
     subplot(3,1,3); hold on; box on;
-    plot( Date(i_sta,1:Nr(i_sta)), LL1(i_sta,1:Nr(i_sta)), 'g.' ); datetick('x','dd/mm HH:MM'); 
-    plot( Date(i_sta,1:Nr(i_sta)), LL2(i_sta,1:Nr(i_sta)), 'b.' ); datetick('x','dd/mm HH:MM'); 
+    plot( DateNum(i_sta,1:Nr(i_sta)), LL1(i_sta,1:Nr(i_sta)), 'g.' ); datetick('x','dd/mm HH:MM'); 
+    plot( DateNum(i_sta,1:Nr(i_sta)), LL2(i_sta,1:Nr(i_sta)), 'b.' ); datetick('x','dd/mm HH:MM'); 
     ylabel("LL1,LL2")
     
     figure; hold on %--- profiles
@@ -572,6 +572,6 @@ if ( i_plot == 1 )
     xlabel("LL1,LL2"); ylabel("Depth (m)")
     
     figure; hold on %--- number of records per file
-    plot(Date(:,1),Nr,'ksq', 'MarkerFaceColor', 'blue'); ylabel('Number of records per file'); datetick  
+    plot(DateNum(:,1),Nr,'ksq', 'MarkerFaceColor', 'blue'); ylabel('Number of records per file'); datetick  
     
 end

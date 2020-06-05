@@ -466,6 +466,7 @@ if ( i_read == 1 );
         % Assing variables to exported arrays
         Nr(i,1)            = size(zDate,1);
         DateNum(i,1:Nr(i,1))  = zDate - 1.; % there is an 1 day lag for tag dates
+        DateNum(i,1:Nr(i,1))  = addtodate( DateNum(i,1:Nr(i,1)), 1900, 'y' );
         DateTime(i,1:Nr(i,1)) = datetime( DateNum(i,1:Nr(i,1)), 'ConvertFrom', 'datenum' );
         Depth(i,1:Nr(i,1)) = zDepth;
         Temp(i,1:Nr(i,1))  = zT;

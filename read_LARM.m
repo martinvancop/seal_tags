@@ -43,7 +43,7 @@ outfile = 'PSS117_TRIOS_LARM.mat'
 %-----------------
 
 if ( strcmp(user,'Martin') == 1 )
-   indir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/PS117_Compilation_Martin/PS117_Ice_Station_Data/PS117_L_Arm_Spectra_Klaus/'
+   indir  = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/PS117_Compilation_Martin/PS117_Ice_Station_Data/PS117_L_Arm_Spectra_Klaus/'
    outdir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/MAT_FILES/'
 end
 if ( strcmp(user,'Bastien') == 1 )

@@ -173,7 +173,8 @@ if ( i_read == 1 );
         dataArray = textscan(fileID, formatSpec_date, endRow_date-startRow_date+1, 'Delimiter', delimiter, 'TextType', 'string', 'EmptyValue', NaN, 'HeaderLines', startRow_date-1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
         fclose(fileID);
 
-        date_sample(i_sta,i_hole,i_replica) = dataArray{:, 1};
+        DateTime(i_sta,i_hole,i_replica) = dataArray{:, 1};
+        DateNum(i_sta,i_hole,i_replica) = datenum(  DateTime(i_sta,i_hole,i_replica) );
         
         clearvars dataArray ans
         
@@ -256,7 +257,7 @@ ft1 = fittype({'x'});
 
 if ( i_save == 1 );
     
-save( [outdir, outfile], 'N_sta', 'N_hole', 'station_name', 'date_sample', 'I1', 'I2', 'I1f', 'I2f', 'lambda', 'Irr_air', 'Irr_water', ...
+save( [outdir, outfile], 'N_sta', 'N_hole', 'station_name', 'DateNum', 'DateTime', 'I1', 'I2', 'I1f', 'I2f', 'lambda', 'Irr_air', 'Irr_water', ...
                          't1f_trios', 't2f_trios', 'EPAR_water', 'EPAR_atm'  );
                      
     

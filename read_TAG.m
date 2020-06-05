@@ -2,7 +2,7 @@ clear all, close all
 
 %---------------------------------------------------------------------------
 %
-% read_sealtag_test : import data from seal tags and convert into .mat file
+% read_TAG : import data from seal tags and convert into .mat file
 %
 % start: Martin Vancoppenolle, May 2019
 %
@@ -15,7 +15,7 @@ i_save = 0     % 1 to save data into outfile
 i_load = 1      % 0 to load data from outfile (to test the file)
 i_plot = 1      % 0 to make a quick test plot
 
-outfile = 'tag_data.mat'
+outfile = 'PSS117_TAG.mat'
 
 %-----------------
 % Set directories
@@ -23,7 +23,7 @@ outfile = 'tag_data.mat'
 
 if ( strcmp(user,'Martin') == 1 )
    indir  = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/CORRECTED_DATA/';
-   outdir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/'
+   outdir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/MAT_FILES/'
 end
 
 if ( strcmp(user,'Bastien') == 1 )

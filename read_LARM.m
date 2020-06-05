@@ -2,15 +2,27 @@ clear all; close all;
 
 %---------------------------------------------------------------------------
 %
-% read_LARM_sample : import data from L-ARM stations
+% read_LARM : import data from L-ARM stations
 %
 % start: Martin Vancoppenolle, May 2020
 %
 %---------------------------------------------------------------------------
-% STATION 2, HOLE 2, REPLICA B in the AIR is WRONG due to operator error
 
-% PAR, transmittance, NDI ?
-% add metadata (thickness, snow depth, ...)
+% Comments
+%
+% STATION 2, HOLE 2, REPLICA B in the AIR is WRONG due to operator error
+%
+% To do
+%
+% 1) PAR calculations and correlations with the rest 
+% V test EPAR calculation in the atmosphere... seem quite high...!!!
+% V reconsider EPAR calculations in filtered bands
+% ? calibrate PAR retrieval method (do loop in parameter space + plot of the MAD in
+% parameter space). MAD = mean absolute deviation
+% - do NDI
+% - do metadata here (thickness, snow depth, Ichla ???-
+% - do transmittance here ?
+% ? do QPAR calculations ?
 
 % main script parameters
 
@@ -20,7 +32,7 @@ i_plot = 1;
 i_save = 1;
 i_load = 0;
 
-outfile = 'PSS117_TRIOS.mat'
+outfile = 'PSS117_TRIOS_LARM.mat'
 
 %==================================================================================================
 % Set directories, list of stations, list of files
@@ -32,7 +44,7 @@ outfile = 'PSS117_TRIOS.mat'
 
 if ( strcmp(user,'Martin') == 1 )
    indir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/PS117_Compilation_Martin/PS117_Ice_Station_Data/PS117_L_Arm_Spectra_Klaus/'
-   outdir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/Tag_data_csv_PS117/'
+   outdir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/MAT_FILES/'
 end
 if ( strcmp(user,'Bastien') == 1 )
    indir = '/Users/ioulianikolskaia/Boulot/ENSEIGNEMENT/MY_LOCEAN_MASTERS/2019-2020/BASTIEN_ALGAE/DATA/PS117/PS117_Compilation_Martin/PS117_Ice_Station_Data/PS117_L_Arm_Spectra_Klaus/'
@@ -188,8 +200,8 @@ i1 = 74; % index of peak-wavelength of green filter
 % By delta-irradiance, I mean single wavelength irradiance, 
 % taken at peak-wavelength of filter transmittance (W/m2/nm)
 for i_sta = 1:N_sta; for i_hole = 1:N_hole(i_sta); for i_rep = 1:3
-   I1(i_sta,i_hole,i_rep) = Irr_water(i_sta,i_hole,i_rep,i1);
-   I2(i_sta,i_hole,i_rep) = Irr_water(i_sta,i_hole,i_rep,i2);
+   I1(i_sta,i_hole,i_rep) = 1.0e-3 * Irr_water(i_sta,i_hole,i_rep,i1);
+   I2(i_sta,i_hole,i_rep) = 1.0e-3 * Irr_water(i_sta,i_hole,i_rep,i2);
 end; end; end;
 
 %----------------------
@@ -215,9 +227,16 @@ t2f_trios  = t2f_trios ./ nansum(t2f_trios .* dlambda(:) ); % normalise transmit
 
 % --- Integrate irradiances over all spectrum
 for i_sta = 1:N_sta; for i_hole = 1:N_hole(i_sta); for i_rep = 1:3
+    
     zIrr(:) = Irr_water(i_sta,i_hole,i_rep,:);
-    I1f(i_sta,i_hole,i_rep) = nansum( zIrr(:) .* t1f_trios(:) .* dlambda(:) );  
-    I2f(i_sta,i_hole,i_rep) = nansum( zIrr(:) .* t2f_trios(:) .* dlambda(:) ); 
+    
+    I1f(i_sta,i_hole,i_rep) = 1.0e-3 * nansum( zIrr' .* t1f_trios(:) .* dlambda(:) );  
+    I2f(i_sta,i_hole,i_rep) = 1.0e-3 * nansum( zIrr' .* t2f_trios(:) .* dlambda(:) ); 
+    
+    EPAR_water(i_sta,i_hole,i_rep) = 1.0e-3 * nansum( zIrr(29:118)' .* dlambda(29:118)  ) %./ ( lambda(118) - lambda(29) );
+    
+    zIrr(:) = Irr_air(i_sta,i_hole,i_rep,:);
+    EPAR_atm(i_sta,i_hole,i_rep) = 1.0e-3 * nansum( zIrr(29:118)' .* dlambda(29:118)  ) % ./ ( lambda(118) - lambda(29) );
 end; end; end;
 
 % --- Linear regression coefficients for I1 vs I1f
@@ -238,7 +257,7 @@ ft1 = fittype({'x'});
 if ( i_save == 1 );
     
 save( [outdir, outfile], 'N_sta', 'N_hole', 'station_name', 'date_sample', 'I1', 'I2', 'I1f', 'I2f', 'lambda', 'Irr_air', 'Irr_water', ...
-                         't1f_trios', 't2f_trios'  );
+                         't1f_trios', 't2f_trios', 'EPAR_water', 'EPAR_atm'  );
                      
     
 end
@@ -352,6 +371,21 @@ if ( i_plot == 1 )
     set(gca, 'FontName', 'Helvetica LT Std')
     set(gca,'FontSize',12);
 
-return
+    %-------------------------------
+    figure % Relation with PAR
+    %-------------------------------
+    subplot(2,1,1); hold on; box on;
+    for i_sta = 1:N_sta; for i_hole = 1:N_hole(i_sta); for i_rep = 1:3
+       plot(I2f(i_sta,i_hole,i_rep)+I1f(i_sta,i_hole,i_rep),EPAR_water(i_sta,i_hole,i_rep),'ksq', 'MarkerFaceColor', 'k')
+    end; end; end;
+    xlabel('I1f+I2f (W/m^2)'), ylabel('E_{PAR}^{water} (W/m^2)'), title('Filter vs delta irradiances')
+    
+    
+    subplot(2,1,2); hold on; box on;
+    for i_sta = 1:N_sta; for i_hole = 1:N_hole(i_sta); for i_rep = 1:3
+       plot(EPAR_atm(i_sta,i_hole,i_rep),EPAR_water(i_sta,i_hole,i_rep),'ksq', 'MarkerFaceColor', 'k')
+    end; end; end;
+    xlabel('E_{PAR}^{atm} (W/m^2)'), ylabel('E_{PAR}^{water} (W/m^2)'), title('Filter vs delta irradiances')
+    
     
 end

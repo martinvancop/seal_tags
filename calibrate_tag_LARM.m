@@ -1,6 +1,13 @@
 clear all;
 close all;
 
+%---------------------------------------------------------------------------
+%
+% calibrate_TAG_LARM : test calibration of TAG vs LARM data
+%
+% start: Martin Vancoppenolle, May 2019
+%
+%---------------------------------------------------------------------------
 
 user = 'Martin' % 'Bastien'
 
@@ -21,8 +28,8 @@ TAG        = load( [ indir, 'PSS117_TAG.mat' ] );
 LARM_TRIOS = load( [ indir, 'PSS117_TRIOS_LARM.mat' ] );
 
 % tu dois trouver un truc pour plotter
-% LARM_TRIOS.I1f (W/m2) vs TAG.LL1
-% LARM_TRIOS.I2f (W/m2) vs TAG.LL2
+% LARM_TRIOS.I1f (W/m2) vs TAG.LL1 (dimensionless)
+% LARM_TRIOS.I2f (W/m2) vs TAG.LL2 (dimensionless)
 
 % tu ne dois plotter les choses QUE lorsqu'on a une donnée LARM
 
@@ -37,39 +44,39 @@ LARM_TRIOS = load( [ indir, 'PSS117_TRIOS_LARM.mat' ] );
 % ensuite, il faut déterminer le coefficient "a", et les R2 et tout ce que tu trouves
 % d'intéressant...
 
-zI1f        = reshape( LARM_TRIOS.I1f, 11*4*3, 1 );
+zI1f        = reshape( LARM_TRIOS.I1f, 11*4*3, 1 ); % déplie la matrice en un vecteur 1D
 
-zDate_LARM  = reshape( LARM_TRIOS.DateNum, 11*4*3, 1 );
+zDate_LARM  = reshape( LARM_TRIOS.DateNum, 11*4*3, 1 ); % deplie
+
 zLL1        = TAG.LL1;
 
-zDate_TAG   = TAG.DateNum; %can remove add to date once read_TAG is re-run
-% for i = 1:16;
-%     for j = 1:5961
-%        zDate_TAG(i,j)=addtodate(zDate_TAG(i,j),1900,'y');
-%     end
-% end
+zDate_TAG   = TAG.DateNum;
 
-zLL1_LARM = nan(11*4*3);
+zLL1_LARM = nan(11*4*3); % le vecteur qui contient les données du TAG dans l'espace des données du TRIOS
 
+for i_LARM = 1:11*4*3 % boucle sur tous les échantillonnages LARM
 
-for i_LARM = 1:11*4*3
-    if ( zI1f(i_LARM) > 0 );
-    for i_TAG = 1:16;
-       i_TAG
-       zaddr_valid = find( zLL1(i_TAG,:) > 0 );
-       zdiff       = abs( 	zDate_LARM(i_LARM) - zDate_TAG(i_TAG,zaddr_valid) );
-       zaddr_min   = find( zdiff < 1.0e-5 ) % find difference less than a minute
-       if ( size(zaddr_min,2) > 0 )
+    if ( zI1f(i_LARM) > 0 ); % ne travailler que sur les données non-nulles
+    
+        for i_TAG = 1:16;
        
-       datetime(zDate_TAG(i_TAG,zaddr_min),'ConvertFrom','datenum')
-       datetime(zDate_LARM(i_LARM),'ConvertFrom','datenum')
+            zaddr_valid = find( zLL1(i_TAG,:) > 0 ); % addresses des points valides 
+            zdiff       = abs( 	zDate_LARM(i_LARM) - zDate_TAG(i_TAG,zaddr_valid) ); % différences de dates
+            zaddr_min   = find( zdiff < 1.0e-5 ) % find difference less than a minute
        
-       zaddr_tag_station(i_LARM) = i_TAG;
-       zaddr_tag_index(i_LARM)   = min(zaddr_min);
-       zLL1_LARM(i_LARM) = zLL1( i_TAG, zaddr_tag_index(i_LARM) );
+            if ( size(zaddr_min,2) > 0 )
        
-       end
-    end
+                datetime(zDate_TAG(i_TAG,zaddr_min),'ConvertFrom','datenum')
+                datetime(zDate_LARM(i_LARM),'ConvertFrom','datenum')
+       
+                zaddr_tag_station(i_LARM) = i_TAG;
+                zaddr_tag_index(i_LARM)   = min(zaddr_min);
+                zLL1_LARM(i_LARM) = zLL1( i_TAG, zaddr_tag_index(i_LARM) ); %---> voilà, on a trouvé la donnée du TAG correspondant à l
+                                                                            % echantillonnage L-ARM
+       
+            end
+       
+        end
     end
 end
 
@@ -77,4 +84,4 @@ figure;
 
 plot( log10(zI1f), zLL1_LARM, 'gsq', 'MarkerFaceColor', 'g'); hold on
 
-plot( [-3.5:0.1:0], 72.2.*[-3.5:0.1:0]+820 , 'k:')
+%plot( [-3.5:0.1:0], 72.2.*[-3.5:0.1:0]+820 , 'k:')

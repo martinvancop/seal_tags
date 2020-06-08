@@ -38,16 +38,19 @@ LARM_TRIOS = load( [ indir, 'PSS117_TRIOS_LARM.mat' ] );
 % d'intéressant...
 
 zI1f        = reshape( LARM_TRIOS.I1f, 11*4*3, 1 );
+
 zDate_LARM  = reshape( LARM_TRIOS.DateNum, 11*4*3, 1 );
 zLL1        = TAG.LL1;
+
 zDate_TAG   = TAG.DateNum; %can remove add to date once read_TAG is re-run
-for i = 1:16;
-    for j = 1:5961
-       zDate_TAG(i,j)=addtodate(zDate_TAG(i,j),1900,'y');
-    end
-end
+% for i = 1:16;
+%     for j = 1:5961
+%        zDate_TAG(i,j)=addtodate(zDate_TAG(i,j),1900,'y');
+%     end
+% end
 
 zLL1_LARM = nan(11*4*3);
+
 
 for i_LARM = 1:11*4*3
     if ( zI1f(i_LARM) > 0 );
@@ -72,4 +75,6 @@ end
 
 figure; 
 
-plot( log10(zI1f), zLL1_LARM, 'ksq', 'MarkerFaceColor', 'k')
+plot( log10(zI1f), zLL1_LARM, 'gsq', 'MarkerFaceColor', 'g'); hold on
+
+plot( [-3.5:0.1:0], 72.2.*[-3.5:0.1:0]+820 , 'k:')

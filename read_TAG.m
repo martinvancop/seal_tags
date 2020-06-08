@@ -10,9 +10,9 @@ clear all, close all
 
 % main script parameters
 user   = 'Martin' % 'Martin' or 'Bastien'
-i_read = 0     % 1 to read data (takes time!), 0 if not
-i_save = 0     % 1 to save data into outfile
-i_load = 1      % 0 to load data from outfile (to test the file)
+i_read = 1     % 1 to read data (takes time!), 0 if not
+i_save = 1     % 1 to save data into outfile
+i_load = 0      % 0 to load data from outfile (to test the file)
 i_plot = 1      % 0 to make a quick test plot
 
 outfile = 'PSS117_TAG.mat'
@@ -466,7 +466,9 @@ if ( i_read == 1 );
         % Assing variables to exported arrays
         Nr(i,1)            = size(zDate,1);
         DateNum(i,1:Nr(i,1))  = zDate - 1.; % there is an 1 day lag for tag dates
-        DateNum(i,1:Nr(i,1))  = addtodate( DateNum(i,1:Nr(i,1)), 1900, 'y' );
+        for j = 1:Nr(i,1)                   % years are also shifted by some amount
+            DateNum(i,j)  = addtodate( DateNum(i,j), 1900, 'y' );
+        end
         DateTime(i,1:Nr(i,1)) = datetime( DateNum(i,1:Nr(i,1)), 'ConvertFrom', 'datenum' );
         Depth(i,1:Nr(i,1)) = zDepth;
         Temp(i,1:Nr(i,1))  = zT;

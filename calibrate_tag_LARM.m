@@ -45,14 +45,17 @@ LARM_TRIOS = load( [ indir, 'PSS117_TRIOS_LARM.mat' ] );
 % d'intéressant...
 
 zI1f        = reshape( LARM_TRIOS.I1f, 11*4*3, 1 ); % déplie la matrice en un vecteur 1D
+zI2f        = reshape( LARM_TRIOS.I2f, 11*4*3, 1 ); % déplie la matrice en un vecteur 1D
 
 zDate_LARM  = reshape( LARM_TRIOS.DateNum, 11*4*3, 1 ); % deplie
 
 zLL1        = TAG.LL1;
+zLL2        = TAG.LL2;
 
 zDate_TAG   = TAG.DateNum;
 
-zLL1_LARM = nan(11*4*3); % le vecteur qui contient les données du TAG dans l'espace des données du TRIOS
+zLL1_LARM = nan(11*4*3,1); % le vecteur qui contient les données du TAG dans l'espace des données du TRIOS
+zLL2_LARM = nan(11*4*3,1);
 
 for i_LARM = 1:11*4*3 % boucle sur tous les échantillonnages LARM
 
@@ -73,6 +76,7 @@ for i_LARM = 1:11*4*3 % boucle sur tous les échantillonnages LARM
                 zaddr_tag_index(i_LARM)   = min(zaddr_min);
                 zLL1_LARM(i_LARM) = zLL1( i_TAG, zaddr_tag_index(i_LARM) ); %---> voilà, on a trouvé la donnée du TAG correspondant à l
                                                                             % echantillonnage L-ARM
+                zLL2_LARM(i_LARM) = zLL2( i_TAG, zaddr_tag_index(i_LARM) );
        
             end
        
@@ -82,6 +86,13 @@ end
 
 figure; 
 
-plot( log10(zI1f), zLL1_LARM, 'gsq', 'MarkerFaceColor', 'g'); hold on
+p1 = plot( log10(zI1f), zLL1_LARM, 'gsq', 'MarkerFaceColor', 'g'); hold on
+p2 = plot( log10(zI2f), zLL2_LARM, 'bsq', 'MarkerFaceColor', 'b'); hold on
+plot( [-3.5:0.1:0], 60.*[-3.5:0.1:0]+800 , 'k:')
 
-%plot( [-3.5:0.1:0], 72.2.*[-3.5:0.1:0]+820 , 'k:')
+ylabel( 'LL - MK2' )
+xlabel( 'LOG10 (Filtered light intensity) - TRIOS (W/m^2)' )
+
+%legend( [p1, p2], { 'LL1', 'LL2' } )
+set(gca, 'FontName', 'Helvetica LT Std')
+set(gca,'FontSize',12);

@@ -2,7 +2,7 @@ clear all; close all;
 
 %---------------------------------------------------------------------------
 %
-% read_LARM : import data from L-ARM stations
+% read_LARM : import TRIOS data from L-ARM stations
 %
 % start: Martin Vancoppenolle, May 2020
 %
@@ -120,6 +120,7 @@ if ( i_read == 1 );
            i_hole     = 1
            i_replica  = 1
         end
+        
         if ( znstr == 4 ) %--- All other stations
             
            zcruise(i) = zzz(1);

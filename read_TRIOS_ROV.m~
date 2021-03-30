@@ -117,23 +117,26 @@ i_file = 1 % VA DE 1-10 ICI
     zsize = size(AutoFocusPicturePath,1); N_rec = zsize;
     
     for i_rec = 1:N_rec
-        
        zz1 = strsplit( ztime(i_rec) , '-' );
-       zyear = str2double(zz1(1));
+       year = str2double(zz1(1));
        zmon = str2double(zz1(2));
        
        zz2 = strsplit( zz1(3), 'T' );
-       zday = str2double(zz2(1));
+       zmon = str2double(zz2(1));
        
        zz3 = strsplit( zz2(2), ':' );
        zhour = str2double(zz3(1));
        zmin = str2double(zz3(2));
-       zsec = str2double(zz3(3));
+       zsec = zz3(3);
        
-       datearray(i_file,i_rec) = datetime(zyear,zmon,zday,zhour,zmin,zsec);
-
+       
+       return
     end
-
+    
+    return
+       
+    %zyear(i_file,:) = 
+    datearray(i_file,:) = datetime(zyear,zmon,zday,zhour,zmin,zsec);
 
     %------------------------
     % Read spectrometer data
@@ -188,32 +191,32 @@ i_file = 1 % VA DE 1-10 ICI
 figure; set(gcf, 'Position',  [100, 100, 800, 800])
 
 subplot(4,1,1), hold on; box on;
-plot(datearray(i_file,:), TRIOS_ROV.PingDepth(i_file,:), 'LineWidth', 2);
-plot(datearray(i_file,:), TRIOS_ROV.PressureDepth(i_file,:), 'LineWidth', 2);
-plot(datearray(i_file,:), TRIOS_ROV.PressureDepth(i_file,:) - TRIOS_ROV.PingDepth(i_file,:), 'LineWidth', 2);
+plot(TRIOS_ROV.PingDepth(i_file,:), 'LineWidth', 2);
+plot(TRIOS_ROV.PressureDepth(i_file,:), 'LineWidth', 2);
+plot(TRIOS_ROV.PressureDepth(i_file,:) - TRIOS_ROV.PingDepth(i_file,:), 'LineWidth', 2);
 legend('Ping', 'Pressure', 'Ice Draft')
 ylabel('Depth (m)') 
 title(strcat("TRIOS - ", cellstr(Filedir(i_file))), 'Interpreter', 'none');
 set(gca, 'FontName', 'Helvetica LT Std'); set(gca,'FontSize',12);
 
 subplot(4,1,2), hold on; box on;
-plot(datearray(i_file,:), TRIOS_ROV.RadianceInclinationdegrees(i_file,:), 'LineWidth', 2), 
-plot(datearray(i_file,:), TRIOS_ROV.IrradianceInclinationdegrees(i_file,:), 'LineWidth', 2), 
+plot(TRIOS_ROV.RadianceInclinationdegrees(i_file,:), 'LineWidth', 2), 
+plot(TRIOS_ROV.IrradianceInclinationdegrees(i_file,:), 'LineWidth', 2), 
 ylabel('Incl (°)'),
 legend('Rad', 'Irr')
 set(gca, 'FontName', 'Helvetica LT Std'); set(gca,'FontSize',12);
 
 subplot(4,1,3), hold on; box on; 
 ylabel('mW/(m^2 nm sr)')
-plot(datearray(i_file,:), max(TRIOS_ROV.radiance(i_file,:,:), [], 3), 'LineWidth', 2);
-plot(datearray(i_file,:), nanmean(TRIOS_ROV.radiance(i_file,:,:),3), 'LineWidth', 2),
+plot(max(TRIOS_ROV.radiance(i_file,:,:), [], 3), 'LineWidth', 2);
+plot(nanmean(TRIOS_ROV.radiance(i_file,:,:),3), 'LineWidth', 2),
 legend('Rad max', 'Rad mean')
 set(gca, 'FontName', 'Helvetica LT Std'); set(gca,'FontSize',12);
 
 subplot(4,1,4), hold on; box on; 
 ylabel(' mW/(m^2 nm)')
-plot(datearray(i_file,:), max(TRIOS_ROV.irradiance(i_file,:,:), [], 3), 'LineWidth', 2);
-plot(datearray(i_file,:), nanmean(TRIOS_ROV.irradiance(i_file,:,:),3), 'LineWidth', 2),
+plot(max(TRIOS_ROV.irradiance(i_file,:,:), [], 3), 'LineWidth', 2);
+plot(nanmean(TRIOS_ROV.irradiance(i_file,:,:),3), 'LineWidth', 2),
 legend('Irrad max', 'Irrad mean')
 set(gca, 'FontName', 'Helvetica LT Std'); set(gca,'FontSize',12);
 

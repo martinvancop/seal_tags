@@ -224,6 +224,7 @@ t2f_trios  = interp1(lambda_f,t2f_raw,lambda,'spline', 0);
 
 dlambda = diff(lambda); dlambda(255)=dlambda(254); % wavelength differences in trios space
 
+
 t1f_trios  = t1f_trios ./ nansum(t1f_trios .* dlambda(:) ); % normalise transmittance functions to unity integral
 t2f_trios  = t2f_trios ./ nansum(t2f_trios .* dlambda(:) ); % normalise transmittance functions to unity integral
 

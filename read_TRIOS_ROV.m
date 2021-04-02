@@ -10,7 +10,7 @@ indir = '/Users/ioulianikolskaia/Boulot/my_ENCADREMENT/MY_LOCEAN_MASTERS/2019-20
 %--------------------------------------------------------------------------
 % Scan list of directories
 %--------------------------------------------------------------------------
-file_list = ls(indir);
+file_list = ls(indir)
 Filedir = strsplit(file_list)
 N_files = size(Filedir,2) - 1
 
@@ -19,7 +19,7 @@ N_files = size(Filedir,2) - 1
 %--------------------------------------------------------------------------
 delimiter = ',';
 
-i_file = 1 % VA DE 1-10 ICI
+i_file = 4 % VA DE 1-10 ICI
 
     % Create full file path / file name
     indir_full = strcat( string(indir), '/', string(Filedir(i_file)) );
@@ -94,6 +94,10 @@ i_file = 1 % VA DE 1-10 ICI
     % Make sure any text containing <undefined> is properly converted to an <undefined> categorical
     idx = (rawStringColumns(:, 2) == "<undefined>");
     rawStringColumns(idx, 2) = "";
+    
+    % Replace non-numeric cells with NaN
+    R = cellfun(@(x) ~isnumeric(x) && ~islogical(x),rawNumericColumns); % Find non-numeric cells
+    rawNumericColumns(R) = {NaN}; % Replace non-numeric cells
 
     % Allocate imported array to column variable names
     ztime(:) = rawStringColumns(:, 1);

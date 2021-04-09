@@ -108,16 +108,16 @@ for i_file = 1:N_files
     rawNumericColumns(R) = {NaN}; % Replace non-numeric cells
 
     % Allocate imported array to column variable names
-    N_rec(i_file) = size(rawStringColumns,1)
-    ztime(1:N_rec(i_file)) = rawStringColumns(:, 1);
-    TRIOS_ROV.PingDepth(i_file,1:N_rec(i_file)) = cell2mat(rawNumericColumns(:, 1));
-    TRIOS_ROV.PressureDepth(i_file,1:N_rec(i_file)) = cell2mat(rawNumericColumns(:, 2));
+    TRIOS_ROV.N_rec(i_file) = size(rawStringColumns,1)
+    ztime(1:TRIOS_ROV.N_rec(i_file)) = rawStringColumns(:, 1);
+    TRIOS_ROV.PingDepth(i_file,1:TRIOS_ROV.N_rec(i_file)) = cell2mat(rawNumericColumns(:, 1));
+    TRIOS_ROV.PressureDepth(i_file,1:TRIOS_ROV.N_rec(i_file)) = cell2mat(rawNumericColumns(:, 2));
     RadianceSensorSerial1 = categorical(rawStringColumns(:, 2));
-    TRIOS_ROV.RadianceInclinationdegrees(i_file,1:N_rec(i_file)) = cell2mat(rawNumericColumns(:, 3));
+    TRIOS_ROV.RadianceInclinationdegrees(i_file,1:TRIOS_ROV.N_rec(i_file)) = cell2mat(rawNumericColumns(:, 3));
     IrradianceSensorSerial1 = cell2mat(rawNumericColumns(:, 4));
-    TRIOS_ROV.IrradianceInclinationdegrees(i_file,1:N_rec(i_file)) = cell2mat(rawNumericColumns(:, 5));
-    TRIOS_ROV.lat(i_file,1:N_rec(i_file)) = cell2mat(rawNumericColumns(:, 6));
-    TRIOS_ROV.lon(i_file,1:N_rec(i_file)) = cell2mat(rawNumericColumns(:, 7));
+    TRIOS_ROV.IrradianceInclinationdegrees(i_file,1:TRIOS_ROV.N_rec(i_file)) = cell2mat(rawNumericColumns(:, 5));
+    TRIOS_ROV.lat(i_file,1:TRIOS_ROV.N_rec(i_file)) = cell2mat(rawNumericColumns(:, 6));
+    TRIOS_ROV.lon(i_file,1:TRIOS_ROV.N_rec(i_file)) = cell2mat(rawNumericColumns(:, 7));
     GAPSTimestamp1 = rawStringColumns(:, 3);
     AutoFocusPicturePath = rawStringColumns(:, 4);
     ManualFocusPicturePath = rawStringColumns(:, 5);
@@ -129,7 +129,7 @@ for i_file = 1:N_files
     % treat date array
     %zsize = size(AutoFocusPicturePath,1); %N_rec = zsize;
     
-    for i_rec = 1:N_rec(i_file)
+    for i_rec = 1:TRIOS_ROV.N_rec(i_file)
         
        zz1 = strsplit( ztime(i_rec) , '-' );
        zyear = str2double(zz1(1));
@@ -172,7 +172,7 @@ for i_file = 1:N_files
     dataArray = textscan(fileID, formatSpec, 'Delimiter', delimiter, 'TextType', 'string', 'EmptyValue', NaN, 'HeaderLines' ,startRow-1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
     radiance = [dataArray{1:end-1}];
     
-    TRIOS_ROV.radiance(i_file,1:N_rec(i_file),:) = radiance(:,:);
+    TRIOS_ROV.radiance(i_file,1:TRIOS_ROV.N_rec(i_file),:) = radiance(:,:);
     
     fclose(fileID);
     clearvars fileID startRow formatSpec dataArray ans;
@@ -184,7 +184,7 @@ for i_file = 1:N_files
     dataArray = textscan(fileID, formatSpec, 'Delimiter', delimiter, 'TextType', 'string', 'EmptyValue', NaN, 'HeaderLines' ,startRow-1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
     irradiance = [dataArray{1:end-1}];
     
-    TRIOS_ROV.irradiance(i_file,1:N_rec(i_file),:) = irradiance(:,:);
+    TRIOS_ROV.irradiance(i_file,1:TRIOS_ROV.N_rec(i_file),:) = irradiance(:,:);
     TRIOS_ROV.irradiance( find( TRIOS_ROV.irradiance < 0. ) ) = 0.;
 
     fclose(fileID);
@@ -239,7 +239,7 @@ for i_file = 1:N_files
     planck = 6.62e-34;
     clight = 3.e8;
 
-    for i_rec = 1:N_rec(i_file)
+    for i_rec = 1:TRIOS_ROV.N_rec(i_file)
 
         zIrr(1,:) = TRIOS_ROV.irradiance(i_file, i_rec, :);
 
